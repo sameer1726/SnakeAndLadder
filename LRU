@@ -1,0 +1,68 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int t=sc.nextInt();
+        while(t--!=0){
+            HashMap<Integer,Node> map=new HashMap<>();
+            Node dummy=new Node(-1);
+            Node tail=dummy;
+            int n=sc.nextInt();
+            int k=sc.nextInt();
+            int arr[]=new int[n];
+            for(int i=0;i<n;i++){
+                arr[i]=sc.nextInt();
+            }
+            for(int i=0;i<n;i++){
+                if(!map.containsKey(arr[i]) && map.size()<k){
+                   Node temp=new Node(arr[i]);
+                   tail.next=temp;
+                   map.put(arr[i],tail);
+                   tail=temp;
+                }
+                else if(map.containsKey(arr[i])){
+                   if(map.get(arr[i]).next==tail) continue;
+                   Node temp=map.get(arr[i]);
+                   temp.next=temp.next.next;
+                   map.put(temp.next.data,temp);
+                   Node node=new Node(arr[i]);
+                   tail.next=node;
+                   map.put(arr[i],tail);
+                   tail=node;
+                }else if(!map.containsKey(arr[i]) && map.size()==k){
+                    map.remove(dummy.next.data);
+                    Node temp=dummy;
+                    temp.next=temp.next.next;
+                    if(temp.next!=null){
+                        map.put(temp.next.data,temp);
+                       
+                    }else{
+                        tail=dummy;
+                        
+                    }
+                    Node node=new Node(arr[i]);
+                    tail.next=node;
+                    map.put(arr[i],tail);
+                    tail=node;
+                }
+            }
+            Node te=dummy;
+            te=te.next;
+            while(te!=null){
+                System.out.print(te.data+" ");
+                te=te.next;
+            }
+            System.out.println();
+        }
+    }
+}
+class Node {
+    int data;
+    Node next;
+    Node(int data){
+        this.data=data;
+        this.next=null;    }
+}
