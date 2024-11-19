@@ -1,0 +1,73 @@
+import java.util.*;
+public class SnakesAndLadderFinal {
+    public static void main(String[] args) {
+        int n=36;
+        int board[]=new int[n+1];
+        int[][] ladders = {
+                { 2, 15 },
+                { 5, 7 },
+                { 9, 27 },
+                { 18, 29 },
+                {25,35}
+        };
+        int[][] snakes = {
+                { 17, 4 },
+                { 20, 6 },
+                { 24, 16 },
+                { 34, 12 },
+                {32,30}
+        };
+        for(int i=0;i<ladders.length;i++){
+            int start=ladders[i][0];
+            int end=ladders[i][1];
+            board[start]=end-start;
+        }
+        for (int i = 0; i < snakes.length; i++) {
+            int start = snakes[i][0];
+            int end = snakes[i][1];
+            board[start] = end - start;
+        }
+        ArrayList<Integer> graph[]=new ArrayList[n+1];
+        for(int i=1;i<=n;i++){
+            graph[i]=new ArrayList<>();
+        }
+
+        for(int i=1;i<n;i++){
+            if(board[i]!=0) continue;
+            for(int dice=1;dice<=6;dice++){
+                int nextSquare=i+dice;
+                if(nextSquare<=n) nextSquare+=board[nextSquare];
+                if(nextSquare<=n){
+                    graph[i].add(nextSquare);
+                }
+            }
+        }
+        for(int i=1;i<n;i++){
+            System.out.println(i+" "+ graph[i]);
+        }
+        int min=findMinMoves(1,n,graph);
+        System.out.println(min);
+
+    }
+    public static int findMinMoves(int source,int destination,ArrayList<Integer> graph[]){
+        int distance[]=new int[destination+1];
+        Queue<Integer> q=new LinkedList<>();
+        boolean visited[]=new boolean[destination+1];
+
+        q.add(source);
+        visited[source]=true;
+        distance[source]=0;
+        
+        while (q.size()!=0) {
+            int curr=q.poll();
+            for(Integer nbrs:graph[curr]){
+                if(!visited[nbrs]){
+                    visited[nbrs]=true;
+                    q.add(nbrs);
+                    distance[nbrs]=distance[curr]+1;
+                }
+            }
+        }
+        return distance[destination];
+    }
+}
